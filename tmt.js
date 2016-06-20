@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name        toomanytags
 // @namespace   zeratax@firemail.cc
-// @description Copies Tags from other sites
+// @description Copies Tags from other sites (currently only panda)
 // @include     http://www.tsumino.com/contribute
 // @include     http://tsumino.com/contribute
 // @require	    https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
-// @grant	      unsafeWindow
-// @author      ZerataX
+// @author      PetersPark
 // @version     1
 // @grant       none
 // ==/UserScript==
@@ -49,6 +48,12 @@ function checkTags(array) {
     }
     if (tags[currentTag].search('language:') >= 0) { currentTag++; $("#currentTag").text(currentTag);}
     if (tags[currentTag].search('language:') >= 0) { currentTag++; $("#currentTag").text(currentTag);}
+    if (tags[currentTag].search(':') < 0) {
+        console.log(tags[currentTag]);
+        console.log(tags[currentTag]);
+        $('.select2-search__field').focus();
+        $('.select2-search__field').eq(6).sendkeys ('{Enter}' + tags[currentTag]);
+    }
     addTag(tags,'artist:',3);
     addTag(tags,'male:',6);
     addTag(tags,'group:',1);
