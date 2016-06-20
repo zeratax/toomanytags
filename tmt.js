@@ -4,8 +4,8 @@
 // @description Copies Tags from other sites (currently only panda)
 // @include     http://www.tsumino.com/contribute
 // @include     http://tsumino.com/contribute
-// @require	    https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
-// @author      PetersPark
+// @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
+// @author      ZerataX
 // @version     1
 // @grant       none
 // ==/UserScript==
