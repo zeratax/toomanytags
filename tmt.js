@@ -15,45 +15,58 @@ var typed = false;
 var pandaData;
 var maxTags = 0;
 
-
+// removes additional info from titles
 function getTitle(title) {
-    title = title.replace(/\([^\)]*\)/g, '') // remove text inside ()
-        .replace(/\[[^\]]*\]/g, ''); // remove text inside []
+    title = title.replace(/\([^\)]*\)/g, '')                                        // remove text inside ()
+        .replace(/\[[^\]]*\]/g, '');                                                // remove text inside []
     return(title);
 }
 
-$.fn.sendkeys = function (x){
-    x = x.replace(/([^{])\n/g, '$1{enter}'); // turn line feeds into explicit break insertions, but not if escaped
+// used to type into input fields
+$.fn.sendkeys = function (x){                                                       
+    x = x.replace(/([^{])\n/g, '$1{enter}');                                        // turn line feeds into explicit break insertions, but not if escaped
     return this.each( function(){
         bililiteRange(this).bounds('selection').sendkeys(x).select();
         this.focus();
     });
 };
 
-function addTag(array, check, input) {
-    if (array[currentTag].search(check) >= 0) {
-        console.log(array[currentTag]);
-        var value = array[currentTag].slice(array[currentTag].search(':') + 1);
-        console.log(value);
-        $('.select2-search__field').focus();
-        $('.select2-search__field').eq(input).sendkeys ('{Enter}' + value);
+// writes tags into input fields
+function addTag(array, check, input) {                                              
+    if (array[currentTag].search(check) >= 0) {                                     // the panda api is a little weird about tags, they look like: "parody:touhou project" So I have to check every tag in an array individually.
+        console.log(array[currentTag]);                                             // logs tag before edit
+        var value = array[currentTag].slice(array[currentTag].search(':') + 1);     // removes identifier, eg "parody:" from tag
+        console.log(value);                                                         // logs tag after edit
+        $('.select2-search__field').focus();                                        // focuses input field
+        $('.select2-search__field').eq(input).sendkeys ('{Enter}' + value);         // writes tag into input field
     }
 }
 
-function checkTags(array) {
+// checks what kind the current tag is then passes it to addTag or writes it immediately.
+function checkTags(array) {                                                         
     tags = array.gmetadata[0].tags;
     typed = true;
     if (currentTag == array.length) {
         typed = false;
     }
-    if (tags[currentTag].search('language:') >= 0) { currentTag++; $("#currentTag").text(currentTag);}
-    if (tags[currentTag].search('language:') >= 0) { currentTag++; $("#currentTag").text(currentTag);}
+    // If available language tags are skipped, since tsumino is english only
+    if (tags[currentTag].search('language:') >= 0) {                                
+        currentTag++; 
+        $("#currentTag").text(currentTag);
+        
+    }
+    if (tags[currentTag].search('language:') >= 0) { 
+        currentTag++; 
+        $("#currentTag").text(currentTag);
+    }
+    // tags that don't look weird in the api, like misc, go straight into the input field.
     if (tags[currentTag].search(':') < 0) {
         console.log(tags[currentTag]);
         console.log(tags[currentTag]);
         $('.select2-search__field').focus();
         $('.select2-search__field').eq(6).sendkeys ('{Enter}' + tags[currentTag]);
     }
+    // check every tag for it's identifier and write it into it's corresponding input field.
     addTag(tags,'artist:',3);
     addTag(tags,'male:',6);
     addTag(tags,'group:',1);
@@ -61,11 +74,12 @@ function checkTags(array) {
     addTag(tags,'parody:',4);
 }
 
-
+// adds button on top of the website
 $(document).ready(function(){
     $('.row.row-no-margin').append('<div class="form-group" style="margin-top: 25px;"><button id="load-tags">LOAD TAGS</button><button id="next-tag">NEXT TAG</button></div>Tags Left:<i id="currentTag" class="button-expand-icon">' + currentTag + '</i>/<i id="maxTags" class="button-expand-icon">' + maxTags + '</i><hr></hr>');
 });
 
+// skips to the next tag
 $('#next-tag').click(function() {
     console.log(currentTag);
     if(typed === true && currentTag < tags.length) {
@@ -73,14 +87,18 @@ $('#next-tag').click(function() {
         currentTag++;
         $("#currentTag").text(currentTag);
     }else{
+        // category field gets added last, due to the way the api structers it's payload
         $('.select2-search__field').focus();
         $('.select2-search__field').eq(0).sendkeys ('{Enter}' + pandaData.gmetadata[0].category);
     }
 });
 
+// loads tags from the current gallery
 $('#load-tags').click(function() {
+    //check if url entered
     if ($('#nttt').val()) {
-
+        //seperate url into its fragments to get gallery_id aka book[4] and gallery_token aka book[5]
+        //http://g.e-hentai.org/g/{gallery_id}/{gallery_token}/
         var book = $('#nttt').val().split('/');
         if (book[0] != 'http:') {
             book.unshift('http:','');
@@ -108,6 +126,6 @@ $('#load-tags').click(function() {
         };
         http.send(params);
     }else{
-        alert("no url given");
+        alert("no url given");                                                      // gives a warning when no url is given
     }
 });
