@@ -24,4 +24,5 @@ Go to https://openuserjs.org/scripts/ZerataX/toomanytags and click __install__
 3. buttons look ugly
 4. non-h will be typed into the category tag and not the tag input field
 5. wrong urls will not give a visible error outside of the console log
+6. first tag appears twice
 
