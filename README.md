@@ -15,9 +15,8 @@ once you reach for example 15/15 the next tag will be the category tag
 ### 1.
 __Chrome:__ Install [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
 
-~~__Firefox:__ Install [Greasemonkey](https://addons.mozilla.org/de/firefox/addon/greasemonkey/)~~
+__Firefox:__ Install ~~[Greasemonkey](https://addons.mozilla.org/de/firefox/addon/greasemonkey/)~~ __Please use [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)__, since I don't yet understand the way Greasemonkey sandboxes.
 
-With recent sdk changes I can't seem to get this script running and I get barely any error logs, so please use Chrome for this script
 ### 2. 
 Go to https://openuserjs.org/scripts/ZerataX/toomanytags and click __install__
 ## Known Bugs
