@@ -19,6 +19,7 @@ var maxTags = 0;
 function getTitle(title) {
     title = title.replace(/\([^\)]*\)/g, '')                                        // remove text inside ()
         .replace(/\[[^\]]*\]/g, '');                                                // remove text inside []
+        .replace(/\{[^\}]*\]/g, '');                                                // remove text inside []
     return(title);
 }
 
