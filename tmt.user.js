@@ -6,7 +6,7 @@
 // @include     http://tsumino.com/contribute
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @author      ZerataX
-// @version     1
+// @version     1.1
 // @grant       none
 // ==/UserScript==
 
@@ -18,9 +18,10 @@ var maxTags = 0;
 // removes additional info from titles
 function getTitle(title) {
     title = title.replace(/\([^\)]*\)/g, '')                                        // remove text inside ()
-        .replace(/\[[^\]]*\]/g, '');                                                // remove text inside []
-        .replace(/\{[^\}]*\]/g, '');                                                // remove text inside []
-    return(title);
+        .replace(/\[[^\]]*\]/g, '')                                                 // remove text inside []
+        .replace(/\{[^\}]*\]/g, '');                                                // remove text inside {}
+    title =  $('<div/>').html(title).text();                                        // replaces special charcters
+    return(title);                                      
 }
 
 // used to type into input fields
@@ -54,7 +55,7 @@ function checkTags(array) {
     if (tags[currentTag].search('language:') >= 0) {                                
         currentTag++; 
         $("#currentTag").text(currentTag);
-        
+
     }
     if (tags[currentTag].search('language:') >= 0) { 
         currentTag++; 
@@ -122,7 +123,11 @@ $('#load-tags').click(function() {
                 maxTags = pandaData.gmetadata[0].tags.length;
                 $("#maxTags").text(maxTags);
                 checkTags(pandaData);
-                $('#name').val( title_eng + ' / ' + title_jpn );
+                if (title_eng == title_jpn) {
+                    $('#name').val( title_eng);
+                } else {
+                    $('#name').val( title_eng + ' / ' + title_jpn );
+                }
             }
         };
         http.send(params);
