@@ -20,10 +20,7 @@ __Firefox:__ Install ~~[Greasemonkey](https://addons.mozilla.org/de/firefox/addo
 ### 2. 
 Go to https://openuserjs.org/scripts/ZerataX/toomanytags and click __install__
 ## Known Bugs
-1. The Category tag is not included into the tag counter
-2. language tags are skipped non intuitiv
-3. buttons look ugly
-4. non-h will be typed into the category tag and not the tag input field
-5. wrong urls will not give a visible error outside of the console log
-6. first tag appears twice
+1. buttons look ugly
+2. non-h will be typed into the category tag and not the tag input field
+3. wrong urls will not give a visible error outside of the console log
 
