@@ -6,7 +6,7 @@
 // @include     http://tsumino.com/contribute
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @author      ZerataX
-// @version     1.1
+// @version     1.2
 // @grant       none
 // ==/UserScript==
 
@@ -21,11 +21,11 @@ function getTitle(title) {
         .replace(/\[[^\]]*\]/g, '')                                                 // remove text inside []
         .replace(/\{[^\}]*\]/g, '');                                                // remove text inside {}
     title =  $('<div/>').html(title).text();                                        // replaces special charcters
-    return(title);                                      
+    return(title);
 }
 
 // used to type into input fields
-$.fn.sendkeys = function (x){                                                       
+$.fn.sendkeys = function (x){
     x = x.replace(/([^{])\n/g, '$1{enter}');                                        // turn line feeds into explicit break insertions, but not if escaped
     return this.each( function(){
         bililiteRange(this).bounds('selection').sendkeys(x).select();
@@ -34,7 +34,7 @@ $.fn.sendkeys = function (x){
 };
 
 // writes tags into input fields
-function addTag(array, check, input) {                                              
+function addTag(array, check, input) {
     if (array[currentTag].search(check) >= 0) {                                     // the panda api is a little weird about tags, they look like: "parody:touhou project" So I have to check every tag in an array individually.
         console.log(array[currentTag]);                                             // logs tag before edit
         var value = array[currentTag].slice(array[currentTag].search(':') + 1);     // removes identifier, eg "parody:" from tag
@@ -45,21 +45,24 @@ function addTag(array, check, input) {
 }
 
 // checks what kind the current tag is then passes it to addTag or writes it immediately.
-function checkTags(array) {                                                         
+function checkTags(array) {
     tags = array.gmetadata[0].tags;
     typed = true;
     if (currentTag == array.length) {
         typed = false;
     }
     // If available language tags are skipped, since tsumino is english only
-    if (tags[currentTag].search('language:') >= 0) {                                
-        currentTag++; 
-        $("#currentTag").text(currentTag);
+    if (tags[currentTag].search('language:') >= 0) {
+        if (tags[currentTag] != "language:english") {
+         alert("please only upload english translations");   
+        }
+        console.log("language tag skipped");
+        currentTag++;
 
     }
-    if (tags[currentTag].search('language:') >= 0) { 
-        currentTag++; 
-        $("#currentTag").text(currentTag);
+    if (tags[currentTag].search('language:') >= 0) {
+        console.log("language tag skipped");
+        currentTag++;
     }
     // tags that don't look weird in the api, like misc, go straight into the input field.
     if (tags[currentTag].search(':') < 0) {
@@ -74,25 +77,27 @@ function checkTags(array) {
     addTag(tags,'group:',1);
     addTag(tags,'character:',5);
     addTag(tags,'parody:',4);
+    $("#currentTag").text(maxTags - currentTag);
 }
 
 // adds button on top of the website
 $(document).ready(function(){
-    $('.row.row-no-margin').append('<div class="form-group" style="margin-top: 25px;"><button id="load-tags">LOAD TAGS</button><button id="next-tag">NEXT TAG</button></div>Tags Left:<i id="currentTag" class="button-expand-icon">' + currentTag + '</i>/<i id="maxTags" class="button-expand-icon">' + maxTags + '</i><hr></hr>');
+    $('.row.row-no-margin').append('<div class="form-group" style="margin-top: 25px;"><button id="load-tags">LOAD TAGS</button><button id="next-tag">NEXT TAG</button></div>Tags Left:<i id="currentTag" class="button-expand-icon">' + currentTag + '</i><hr></hr>');
 });
 
 // skips to the next tag
 $('#next-tag').click(function() {
-    console.log(currentTag);
-    if(typed === true && currentTag < tags.length) {
-        checkTags(pandaData);
+    if(typed === true && currentTag <= tags.length - 2) {
         currentTag++;
-        $("#currentTag").text(currentTag);
-    }else{
+        checkTags(pandaData);
+    }else if (currentTag == tags.length - 1) {
+        currentTag++;
         // category field gets added last, due to the way the api structers it's payload
         $('.select2-search__field').focus();
         $('.select2-search__field').eq(0).sendkeys ('{Enter}' + pandaData.gmetadata[0].category);
     }
+    console.log(currentTag);
+    $("#currentTag").text(maxTags - currentTag);
 });
 
 // loads tags from the current gallery
@@ -121,7 +126,6 @@ $('#load-tags').click(function() {
                 var title_jpn = getTitle(pandaData.gmetadata[0].title_jpn).trim();
                 var title_eng = getTitle(pandaData.gmetadata[0].title).trim();
                 maxTags = pandaData.gmetadata[0].tags.length;
-                $("#maxTags").text(maxTags);
                 checkTags(pandaData);
                 if (title_eng == title_jpn) {
                     $('#name').val( title_eng);
