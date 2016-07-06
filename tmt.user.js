@@ -6,7 +6,7 @@
 // @include     http://tsumino.com/contribute
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @author      ZerataX
-// @version     1.2
+// @version     1.3
 // @grant       none
 // ==/UserScript==
 
@@ -19,7 +19,7 @@ var maxTags = 0;
 function getTitle(title) {
     title = title.replace(/\([^\)]*\)/g, '')                                        // remove text inside ()
         .replace(/\[[^\]]*\]/g, '')                                                 // remove text inside []
-        .replace(/\{[^\}]*\]/g, '');                                                // remove text inside {}
+        .replace(/\{[^\}]*\}/g, '');                                                // remove text inside {}
     title =  $('<div/>').html(title).text();                                        // replaces special charcters
     return(title);
 }
