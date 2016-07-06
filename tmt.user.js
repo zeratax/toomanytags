@@ -6,7 +6,7 @@
 // @include     http://tsumino.com/contribute
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @author      ZerataX
-// @version     1.4
+// @version     1.5
 // @grant       none
 // ==/UserScript==
 
@@ -123,13 +123,13 @@ $('#load-tags').click(function() {
                 //var tags = {"gmetadata":[{"gid":618395,"token":"0439fa3666","archiver_key":"407328--dfb5f1192df11db32203e7467969aeca53786f67","title":"(Kouroumu 8) [Handful\u2606Happiness! (Fuyuki Nanahara)] TOUHOU GUNMANIA A2 (Touhou Project)","title_jpn":"(\u7d05\u697c\u59228) [Handful\u2606Happiness! (\u4e03\u539f\u51ac\u96ea)] TOUHOU GUNMANIA A2 (\u6771\u65b9Project)","category":"Non-H","thumb":"http:\/\/gt1.ehgt.org\/14\/63\/1463dfbc16847c9ebef92c46a90e21ca881b2a12-1729712-4271-6032-jpg_l.jpg","uploader":"avexotsukaai","posted":"1376143500","filecount":"20","filesize":51210504,"expunged":false,"rating":"4.43","torrentcount":"0","tags":["parody:touhou project","group:handful happiness","artist:nanahara fuyuki","full color","artbook"]}]};
                 pandaData = JSON.parse(http.responseText);
                 console.log(pandaData);
-                var title_jpn = getTitle(pandaData.gmetadata[0].title_jpn).toLowerCase().trim();
-                var title_eng = getTitle(pandaData.gmetadata[0].title).toLowerCase().trim();
+                var title_jpn = getTitle(pandaData.gmetadata[0].title_jpn)trim();
+                var title_eng = getTitle(pandaData.gmetadata[0].title).trim();
                 maxTags = pandaData.gmetadata[0].tags.length;
                 checkTags(pandaData);
                 console.log(title_eng);
                 console.log(title_jpn);
-                if (title_eng == title_jpn) {
+                if (title_eng.toLowerCase() == title_jpn.toLowerCase()) {
                     $('#name').val( title_eng);
                 } else {
                     $('#name').val( title_eng + ' / ' + title_jpn );
