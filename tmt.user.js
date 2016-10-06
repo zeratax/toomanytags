@@ -7,7 +7,7 @@
 // @include     http://pururin.us/contribute/upload
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @author      ZerataX
-// @version     1.6.0
+// @version     1.6.1
 // @grant       none
 // ==/UserScript==
 
