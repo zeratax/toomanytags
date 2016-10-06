@@ -4,9 +4,10 @@
 // @description Copies Tags from other sites (currently only panda)
 // @include     http://www.tsumino.com/contribute
 // @include     http://tsumino.com/contribute
+// @include     http://pururin.us/contribute/upload
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @author      ZerataX
-// @version     1.5.3
+// @version     1.6.0
 // @grant       none
 // ==/UserScript==
 
@@ -14,7 +15,11 @@ var currentTag = 0;
 var typed = false;
 var pandaData;
 var maxTags = 0;
-
+if (window.location.href == "http://pururin.us/contribute/upload") {
+    input_field = $('.table-edit input');
+}else{
+    input_field = $('.select2-search__field');
+}
 // removes additional info from titles
 function getTitle(title) {
     title = title.replace(/\([^\)]*\)/g, '')                                        // remove text inside ()
@@ -40,8 +45,8 @@ function addTag(array, check, input) {
         console.log(array[currentTag]);                                             // logs tag before edit
         var value = array[currentTag].slice(array[currentTag].search(':') + 1);     // removes identifier, eg "parody:" from tag
         console.log(value);                                                         // logs tag after edit
-        $('.select2-search__field').focus();                                        // focuses input field
-        $('.select2-search__field').eq(input).sendkeys ('{Enter}' + value);         // writes tag into input field
+        input_field.focus();                                                        // focuses input field
+        input_field.eq(input).sendkeys ('{Enter}' + value);                         // writes tag into input field
     }
 }
 
@@ -55,7 +60,7 @@ function checkTags(array) {
     // If available language tags are skipped, since tsumino is english only
     if (tags[currentTag].search('language:') >= 0) {
         if (tags[currentTag] != "language:english") {
-         alert("please only upload english translations");   
+            alert("please only upload english translations");   
         }
         console.log("language tag skipped");
         currentTag++;
@@ -69,22 +74,41 @@ function checkTags(array) {
     if (tags[currentTag].search(':') < 0) {
         console.log(tags[currentTag]);
         console.log(tags[currentTag]);
-        $('.select2-search__field').focus();
-        $('.select2-search__field').eq(6).sendkeys ('{Enter}' + tags[currentTag]);
+        input_field.focus();
+        if (window.location.href == "http://pururin.us/contribute/upload") {
+            input_field.eq(6).sendkeys ('{Enter}' + tags[currentTag]);
+
+        }else{
+            input_field.eq(6).sendkeys ('{Enter}' + tags[currentTag]);
+        }
     }
     // check every tag for it's identifier and write it into it's corresponding input field.
-    addTag(tags,'artist:',3);
-    addTag(tags,'male:',6);
-    addTag(tags,'group:',1);
-    addTag(tags,'character:',5);
-    addTag(tags,'parody:',4);
+    if (window.location.href == "http://pururin.us/contribute/upload") {
+        addTag(tags,'artist:',2);
+        addTag(tags,'male:',6);
+        addTag(tags,'group:',3);
+        addTag(tags,'character:',5);
+        addTag(tags,'parody:',4);
+    }else{
+        addTag(tags,'artist:',3);
+        addTag(tags,'male:',6);
+        addTag(tags,'group:',1);
+        addTag(tags,'character:',5);
+        addTag(tags,'parody:',4);
+    }
     $("#currentTag").text(maxTags - currentTag);
 }
 
 // adds button on top of the website
-$(document).ready(function(){
-    $('.row.row-no-margin').append('<div class="form-group" style="margin-top: 25px;"><button id="load-tags">LOAD TAGS</button><button id="next-tag">NEXT TAG</button></div>Tags Left:<i id="currentTag" class="button-expand-icon">' + currentTag + '</i><hr></hr>');
-});
+if (window.location.href == "http://pururin.us/contribute/upload") {
+    $(document).ready(function(){
+        $('#tag-check-dupe').after('<a class="btn btn-gray" id="load-tags"><i class="fa fa-tags"></i><span>Load Tags</span></a><a class="btn btn-gray" id="next-tag"><i class="fa fa-arrow-circle-o-right"></i><span>Next Tag</span></a><span><br>Tags Left :<i id="currentTag" class="button-expand-icon">' + currentTag + '</i></span>');
+    });
+}else{
+    $(document).ready(function(){
+        $('.row.row-no-margin').append('<div class="form-group" style="margin-top: 25px;"><button id="load-tags">LOAD TAGS</button><button id="next-tag">NEXT TAG</button></div>Tags Left:<i id="currentTag" class="button-expand-icon">' + currentTag + '</i><hr></hr>');
+    });
+}
 
 // skips to the next tag
 $('#next-tag').click(function() {
@@ -94,8 +118,35 @@ $('#next-tag').click(function() {
     }else if (currentTag == tags.length - 1) {
         currentTag++;
         // category field gets added last, due to the way the api structers it's payload
-        $('.select2-search__field').focus();
-        $('.select2-search__field').eq(0).sendkeys ('{Enter}' + pandaData.gmetadata[0].category);
+        if (window.location.href == "http://pururin.us/contribute/upload") {
+            switch (pandaData.gmetadata[0].category.toLowerCase()) {
+                case "doujinshi":
+                    $('#edit-type[name="category"]>option:eq(1)').prop('selected', true);
+                    break;
+                case "game cg sets":
+                    $('#edit-type[name="category"]>option:eq(3)').prop('selected', true);
+                    break;
+                case "manga":
+                    $('#edit-type[name="category"]>option:eq(2)').prop('selected', true);
+                    alert("Please make sure this is a Manga and not a Manga One-shot");
+                    break;
+                case "artist cg sets":
+                    $('#edit-type[name="category"]>option:eq(3)').prop('selected', true);
+                    break;
+                case "image sets":
+                    $('#edit-type[name="category"]>option:eq(3)').prop('selected', true);
+                    break;
+                case "western":
+                    alert("this gallery is from western origin");
+                    break;
+                default:
+                    alert("category non-h is not a pururin category");
+                    break;
+            }
+        }else{
+            $('.select2-search__field').focus();
+            $('.select2-search__field').eq(0).sendkeys ('{Enter}' + pandaData.gmetadata[0].category);
+        }
     }
     console.log(currentTag);
     $("#currentTag").text(maxTags - currentTag);
@@ -104,10 +155,15 @@ $('#next-tag').click(function() {
 // loads tags from the current gallery
 $('#load-tags').click(function() {
     //check if url entered
-    if ($('#nttt').val()) {
+    if (window.location.href == "http://pururin.us/contribute/upload") {
+        source_link = $('#edit-palt');
+    }else{
+        source_link = $('#nttt');
+    }
+    if (source_link.val()) {
         //seperate url into its fragments to get gallery_id aka book[4] and gallery_token aka book[5]
         //http://g.e-hentai.org/g/{gallery_id}/{gallery_token}/
-        var book = $('#nttt').val().split('/');
+        var book = source_link.val().split('/');
         if (book[0] != 'http:') {
             book.unshift('http:','');
         }
@@ -130,10 +186,19 @@ $('#load-tags').click(function() {
                 checkTags(pandaData);
                 console.log(title_eng);
                 console.log(title_jpn);
-                if (title_eng.toLowerCase() == title_jpn.toLowerCase()) {
-                    $('#name').val( title_eng);
-                } else {
-                    $('#name').val( title_eng + ' / ' + title_jpn );
+                if (window.location.href == "http://pururin.us/contribute/upload") {
+                    if (title_eng.toLowerCase() == title_jpn.toLowerCase()) {
+                        $('#edit-english').val(title_eng);
+                    } else {
+                        $('#edit-english').val(title_eng);
+                        $('#edit-japanese').val(title_jpn);
+                    }
+                }else{
+                    if (title_eng.toLowerCase() == title_jpn.toLowerCase()) {
+                        $('#name').val( title_eng);
+                    } else {
+                        $('#name').val( title_eng + ' / ' + title_jpn );
+                    }
                 }
             }
         };
