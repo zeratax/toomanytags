@@ -1,5 +1,5 @@
 # toomanytags
-adds tags from panda to tsumino
+adds tags from panda to tsumino/pururin
 ## Instructions
 #### 1. 
 Enter a valid panda url into the *notes* field
@@ -7,6 +7,7 @@ Enter a valid panda url into the *notes* field
 click load tags
 #### 3. 
 approve the tags by pressing enter or clicking on the dropdown field, or modify the tag until you find the tsumino equivalent.
+it's pretty wacky and weird on pururin, but I'm not really going to look into this until the tag search is more stable.
 #### 4. 
 click next tag to continue with the next
 #### 5. 
@@ -21,6 +22,6 @@ __Firefox:__ Install ~~[Greasemonkey](https://addons.mozilla.org/de/firefox/addo
 Go to https://openuserjs.org/scripts/ZerataX/toomanytags and click __install__
 ## Known Bugs
 1. buttons look ugly
-2. non-h will be typed into the category tag and not the tag input field
+2. non-h will be typed into the category tag and not the tag input field (on tsumino that is)
 3. wrong urls will not give a visible error outside of the console log
 
