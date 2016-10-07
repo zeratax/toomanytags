@@ -7,7 +7,7 @@
 // @include     http://pururin.us/contribute/upload
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @author      ZerataX
-// @version     1.6.1
+// @version     1.6.2
 // @grant       none
 // ==/UserScript==
 
@@ -163,7 +163,7 @@ $('#load-tags').click(function() {
     if (source_link.val()) {
         //seperate url into its fragments to get gallery_id aka book[4] and gallery_token aka book[5]
         //http://g.e-hentai.org/g/{gallery_id}/{gallery_token}/
-        var book = source_link.replace("https:", "http:").val().split('/');
+        var book = source_link.val().replace("https:", "http:").split('/');
         if (book[0] != 'http:') {
             book.unshift('http:','');
         }
