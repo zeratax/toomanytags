@@ -131,10 +131,10 @@ $('#next-tag').click(function() {
                     alert("Please make sure this is a Manga and not a Manga One-shot");
                     break;
                 case "artist cg sets":
-                    $('#edit-type[name="category"]>option:eq(3)').prop('selected', true);
+                    $('#edit-type[name="category"]>option:eq(4)').prop('selected', true);
                     break;
                 case "image sets":
-                    $('#edit-type[name="category"]>option:eq(3)').prop('selected', true);
+                    $('#edit-type[name="category"]>option:eq(4)').prop('selected', true);
                     break;
                 case "western":
                     alert("this gallery is from western origin");
