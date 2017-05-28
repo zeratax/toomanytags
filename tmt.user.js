@@ -6,20 +6,52 @@
 // @include     http://tsumino.com/contribute
 // @include     http://pururin.us/contribute/upload
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
+// @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/jquery.sendkeys.js
 // @author      ZerataX
-// @version     1.6.3
+// @version     1.7.0
 // @grant       none
 // ==/UserScript==
 
-var currentTag = 0;
 var typed = false;
-var pandaData;
+var currentTag = 0;
 var maxTags = 0;
-if (window.location.href == "http://pururin.us/contribute/upload") {
-    input_field = $('.table-edit input');
-}else{
-    input_field = $('.select2-search__field');
+var load_btn = document.createElement("a");
+var next_btn = document.createElement("a");
+var tag_counter = document.createElement("span");
+var pandaData;
+
+
+function create_interface(){
+    // adds button on top of the website
+    if (window.location.href == "http://pururin.us/contribute/upload") {
+        var form_group = $('#uploadHentai');
+
+        load_btn.id = "load-tags";
+        form_group.append(load_btn);
+        load_btn.innerHTML = '<i class="fa fa-tags"></i> Load Tags';
+        load_btn.classList.add('btn');
+        load_btn.classList.add('btn-gray');
+        load_btn.classList.add('btn-sm');
+        load_btn.onclick = function() { load_tags(); };
+
+        next_btn.id = "next-tag";
+        form_group.append(next_btn);
+        next_btn.innerHTML = '<i class="fa fa-arrow-circle-o-right"></i> Next Tag';
+        next_btn.classList.add('btn');
+        next_btn.classList.add('btn-gray');
+        next_btn.classList.add('btn-sm');
+        next_btn.onclick = function() { next_tag(); };
+
+        form_group.append(tag_counter);
+        tag_counter.innerHTML = "0/0 Tags";
+        tag_counter.style.color = "white";
+    }else{
+        alert("if you're still using this and want an update make an issue on github https://github.com/ZerataX/toomanytags/issues/new");
+    }
+
 }
+
+
 // removes additional info from titles
 function getTitle(title) {
     title = title.replace(/\([^\)]*\)/g, '')                                        // remove text inside ()
@@ -30,25 +62,23 @@ function getTitle(title) {
     return(title);
 }
 
-// used to type into input fields
-$.fn.sendkeys = function (x){
-    x = x.replace(/([^{])\n/g, '$1{enter}');                                        // turn line feeds into explicit break insertions, but not if escaped
-    return this.each( function(){
-        bililiteRange(this).bounds('selection').sendkeys(x).select();
-        this.focus();
-    });
-};
 
 // writes tags into input fields
-function addTag(array, check, input) {
-    if (array[currentTag].search(check) >= 0) {                                     // the panda api is a little weird about tags, they look like: "parody:touhou project" So I have to check every tag in an array individually.
-        console.log(array[currentTag]);                                             // logs tag before edit
+function addTag(array, type, field) {
+    if (array[currentTag].search(type) >= 0) {                                     // the panda api is a little weird about tags, they look like: "parody:touhou project" So I have to check every tag in an array individually.
         var value = array[currentTag].slice(array[currentTag].search(':') + 1);     // removes identifier, eg "parody:" from tag
-        console.log(value);                                                         // logs tag after edit
-        input_field.focus();                                                        // focuses input field
-        input_field.eq(input).sendkeys ('{Enter}' + value);                         // writes tag into input field
+        console.log(value);
+        var input_field = $('.tt-input:eq('+ field +')');
+        input_field.focus();
+        input_field.trigger({type: 'keydown', key: "Backspace" });
+        for (var index = 0; index < value.length; index++) {
+
+            input_field.trigger({type: 'keydown', key: String(value).charAt(index) });
+        }
+        //input_field.val(value);
     }
 }
+
 
 // checks what kind the current tag is then passes it to addTag or writes it immediately.
 function checkTags(array) {
@@ -57,109 +87,80 @@ function checkTags(array) {
     if (currentTag == array.length) {
         typed = false;
     }
-    // If available language tags are skipped, since tsumino is english only
     if (tags[currentTag].search('language:') >= 0) {
-        if (tags[currentTag] != "language:english") {
-            alert("please only upload english translations");   
+        if (tags[currentTag].search('language:japanese') >= 0) {
+            $('.form-control[name="language"]').val("13011");
+        }else if(tags[currentTag].search('language:english') >= 0) {
+            $('.form-control[name="language"]').val("13010");
+        }else if (tags[currentTag] != "language:english" || tags[currentTag] != "language:japanese") {
+            alert("please only upload english translations or japanese content");
         }
-        console.log("language tag skipped");
-        currentTag++;
-
-    }
-    if (tags[currentTag].search('language:') >= 0) {
-        console.log("language tag skipped");
         currentTag++;
     }
     // tags that don't look weird in the api, like misc, go straight into the input field.
     if (tags[currentTag].search(':') < 0) {
         console.log(tags[currentTag]);
-        console.log(tags[currentTag]);
-        input_field.focus();
-        if (window.location.href == "http://pururin.us/contribute/upload") {
-            input_field.eq(6).sendkeys ('{Enter}' + tags[currentTag]);
+        $('.form-control[name="tags"]').sendkeys('{Enter}' + tags[currentTag] + '{leftarrow}{Enter}');
 
-        }else{
-            input_field.eq(6).sendkeys ('{Enter}' + tags[currentTag]);
-        }
     }
     // check every tag for it's identifier and write it into it's corresponding input field.
-    if (window.location.href == "http://pururin.us/contribute/upload") {
-        addTag(tags,'artist:',2);
-        addTag(tags,'male:',6);
-        addTag(tags,'group:',3);
-        addTag(tags,'character:',5);
-        addTag(tags,'parody:',4);
-    }else{
-        addTag(tags,'artist:',3);
-        addTag(tags,'male:',6);
-        addTag(tags,'group:',1);
-        addTag(tags,'character:',5);
-        addTag(tags,'parody:',4);
-    }
+    addTag(tags,'artist:',0);
+    addTag(tags,'male:',4);
+    addTag(tags,'group:',1);
+    addTag(tags,'character:',3);
+    addTag(tags,'parody:',2);
+
     $("#currentTag").text(maxTags - currentTag);
 }
 
-// adds button on top of the website
-if (window.location.href == "http://pururin.us/contribute/upload") {
-    $(document).ready(function(){
-        $('#tag-check-dupe').after('<a class="btn btn-gray" id="load-tags"><i class="fa fa-tags"></i><span>Load Tags</span></a><a class="btn btn-gray" id="next-tag"><i class="fa fa-arrow-circle-o-right"></i><span>Next Tag</span></a><span><br>Tags Left :<i id="currentTag" class="button-expand-icon">' + currentTag + '</i></span>');
-    });
-}else{
-    $(document).ready(function(){
-        $('.row.row-no-margin').append('<div class="form-group" style="margin-top: 25px;"><button id="load-tags">LOAD TAGS</button><button id="next-tag">NEXT TAG</button></div>Tags Left:<i id="currentTag" class="button-expand-icon">' + currentTag + '</i><hr></hr>');
-    });
-}
 
 // skips to the next tag
-$('#next-tag').click(function() {
+function next_tag() {
     if(typed === true && currentTag <= tags.length - 2) {
         currentTag++;
         checkTags(pandaData);
     }else if (currentTag == tags.length - 1) {
         currentTag++;
         // category field gets added last, due to the way the api structers it's payload
-        if (window.location.href == "http://pururin.us/contribute/upload") {
-            switch (pandaData.gmetadata[0].category.toLowerCase()) {
-                case "doujinshi":
-                    $('#edit-type[name="category"]>option:eq(1)').prop('selected', true);
-                    break;
-                case "game cg sets":
-                    $('#edit-type[name="category"]>option:eq(3)').prop('selected', true);
-                    break;
-                case "manga":
-                    $('#edit-type[name="category"]>option:eq(2)').prop('selected', true);
-                    alert("Please make sure this is a Manga and not a Manga One-shot");
-                    break;
-                case "artist cg sets":
-                    $('#edit-type[name="category"]>option:eq(4)').prop('selected', true);
-                    break;
-                case "image sets":
-                    $('#edit-type[name="category"]>option:eq(4)').prop('selected', true);
-                    break;
-                case "western":
-                    alert("this gallery is from western origin");
-                    break;
-                default:
-                    alert("category non-h is not a pururin category");
-                    break;
-            }
-        }else{
-            $('.select2-search__field').focus();
-            $('.select2-search__field').eq(0).sendkeys ('{Enter}' + pandaData.gmetadata[0].category);
+        switch (pandaData.gmetadata[0].category.toLowerCase()) {
+            case "doujinshi":
+                $('.form-control[name="category"]').val("13003");
+                break;
+            case "artbook":
+                $('.form-control[name="category"]').val("13001");
+                break;
+            case "game cg sets":
+                $('.form-control[name="category"]').val("13008");
+                break;
+            case "manga":
+                $('.form-control[name="category"]').val("13004");
+                alert("Please make sure this is a Manga and not a Manga One-shot");
+                break;
+            case "artist cg sets":
+                $('.form-control[name="category"]').val("13006");
+                break;
+            case "image sets":
+                $('.form-control[name="category"]').val("13006");
+                break;
+            case "western":
+                alert("this gallery has western origin");
+                break;
+            default:
+                alert("category non-h is not a pururin category");
+                break;
         }
+        //alert("All tags used!");
+        tag_counter.style.color = "#D45776";
     }
     console.log(currentTag);
-    $("#currentTag").text(maxTags - currentTag);
-});
+    tag_counter.innerHTML = currentTag + "/" + maxTags + " Tags";
+}
+
 
 // loads tags from the current gallery
-$('#load-tags').click(function() {
+function load_tags() {
     //check if url entered
-    if (window.location.href == "http://pururin.us/contribute/upload") {
-        source_link = $('#edit-palt');
-    }else{
-        source_link = $('#nttt');
-    }
+    source_link = $('.form-control[name="source"]');
     if (source_link.val()) {
         //seperate url into its fragments to get gallery_id aka book[4] and gallery_token aka book[5]
         //http://g.e-hentai.org/g/{gallery_id}/{gallery_token}/
@@ -168,7 +169,7 @@ $('#load-tags').click(function() {
             book.unshift('http:','');
         }
         var http = new XMLHttpRequest();
-        var url = 'http://g.e-hentai.org/api.php';
+        var url = 'https://e-hentai.org/api.php';
         var params = '{  "method": "gdata",  "gidlist": [ [' + book[4] + ',"' + book[5] + '"] ],"namespace": 1 }';
         http.open('POST', url, true);
 
@@ -183,22 +184,15 @@ $('#load-tags').click(function() {
                 var title_jpn = getTitle(pandaData.gmetadata[0].title_jpn).trim();
                 var title_eng = getTitle(pandaData.gmetadata[0].title).trim();
                 maxTags = pandaData.gmetadata[0].tags.length;
+                tag_counter.innerHTML = "0/" + maxTags + " Tags";
                 checkTags(pandaData);
                 console.log(title_eng);
                 console.log(title_jpn);
-                if (window.location.href == "http://pururin.us/contribute/upload") {
-                    if (title_eng.toLowerCase() == title_jpn.toLowerCase()) {
-                        $('#edit-english').val(title_eng);
-                    } else {
-                        $('#edit-english').val(title_eng);
-                        $('#edit-japanese').val(title_jpn);
-                    }
-                }else{
-                    if (title_eng.toLowerCase() == title_jpn.toLowerCase()) {
-                        $('#name').val( title_eng);
-                    } else {
-                        $('#name').val( title_eng + ' / ' + title_jpn );
-                    }
+                if (title_eng.toLowerCase() == title_jpn.toLowerCase()) {
+                    $('.form-control[name="english"]').val(title_eng);
+                } else {
+                    $('.form-control[name="english"]').val(title_eng);
+                    $('.form-control[name="japanese"]').val(title_jpn);
                 }
             }
         };
@@ -206,4 +200,16 @@ $('#load-tags').click(function() {
     }else{
         alert("no url given");                                                      // gives a warning when no url is given
     }
-});
+}
+
+
+function doc_keyUp(e) {
+    if(e.code == "Enter") {
+        next_tag();
+    }
+}
+
+
+document.addEventListener('keyup', doc_keyUp, false);
+
+window.onload = create_interface();
