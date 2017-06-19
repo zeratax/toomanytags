@@ -8,7 +8,7 @@
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/jquery.sendkeys.js
 // @author      ZerataX
-// @version     1.7.0
+// @version     1.7.1
 // @grant       none
 // ==/UserScript==
 
@@ -99,10 +99,9 @@ function checkTags(array) {
     }
     // tags that don't look weird in the api, like misc, go straight into the input field.
     if (tags[currentTag].search(':') < 0) {
-        console.log(tags[currentTag]);
-        $('.form-control[name="tags"]').sendkeys('{Enter}' + tags[currentTag] + '{leftarrow}{Enter}');
-
+        addTag(tags,'',4);
     }
+
     // check every tag for it's identifier and write it into it's corresponding input field.
     addTag(tags,'artist:',0);
     addTag(tags,'male:',4);
