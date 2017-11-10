@@ -2,6 +2,7 @@
 // @name        toomanytags
 // @namespace   zeratax@firemail.cc
 // @description Copies Tags from other sites (currently only panda)
+// @license     GPL-3.0
 // @include     http://www.tsumino.com/contribute
 // @include     http://tsumino.com/contribute
 // @include     http://pururin.us/contribute/upload
