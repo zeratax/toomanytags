@@ -3,13 +3,12 @@
 // @namespace   zeratax@firemail.cc
 // @description Copies Tags from other sites (currently only panda)
 // @license     GPL-3.0
-// @include     http://www.tsumino.com/contribute
-// @include     http://tsumino.com/contribute
-// @include     http://pururin.us/contribute/upload
+// @include     /^https?://(www\.)?tsumino\.com/*
+// @include     /^https?://(www\.)?pururin\.(us|io)\/contribute\/upload
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/jquery.sendkeys.js
 // @author      ZerataX
-// @version     1.7.1
+// @version     1.7.2
 // @grant       none
 // ==/UserScript==
 
@@ -24,7 +23,7 @@ var pandaData;
 
 function create_interface(){
     // adds button on top of the website
-    if (window.location.href == "http://pururin.us/contribute/upload") {
+    if (window.location.hostname.replace("www.", "").split(".")[0] == "pururin") {
         var form_group = $('#uploadHentai');
 
         load_btn.id = "load-tags";
