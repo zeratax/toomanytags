@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        toomanytags
-// @namespace   zeratax@firemail.cc
+// @namespace   mail@zera.tax
 // @description Copies Tags from other sites (currently only panda)
 // @license     GPL-3.0
 // @include     /^https?://(www\.)?tsumino\.com/*
@@ -8,7 +8,7 @@
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
 // @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/jquery.sendkeys.js
 // @author      ZerataX
-// @version     1.7.2
+// @version     1.7.3
 // @grant       none
 // ==/UserScript==
 
