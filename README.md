@@ -1,6 +1,8 @@
 # toomanytags
 Adds tags from panda to tsumino/pururin
 
+makes use of [bililiteRange](https://github.com/dwachss/bililiteRange) to abstract text selection and replacement.
+
 ## Instructions
   1. Enter a valid panda url into the *notes* field
   2. Click load tags
