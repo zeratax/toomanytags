@@ -1,15 +1,15 @@
 // ==UserScript==
-// @name        toomanytags
-// @namespace   mail@zera.tax
-// @description Copies Tags from other sites (currently only panda)
-// @license     GPL-3.0
-// @include     /^https?://(www\.)?tsumino\.com/*
-// @include     /^https?://(www\.)?pururin\.(us|io)\/contribute\/upload
-// @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
-// @require     https://raw.githubusercontent.com/dwachss/bililiteRange/master/jquery.sendkeys.js
-// @author      ZerataX
-// @version     1.7.3
-// @grant       none
+// @name         toomanytags
+// @version      1.7.4
+// @description  Copies Tags from other sites (currently only panda)
+// @author       ZerataX
+// @namespace    mail@zera.tax
+// @license      MIT
+// @include      /^https?://(www\.)?tsumino\.com/*
+// @include      /^https?://(www\.)?pururin\.(us|io)\/contribute\/upload
+// @require      https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
+// @require      https://raw.githubusercontent.com/dwachss/bililiteRange/master/jquery.sendkeys.js
+// @grant        none
 // ==/UserScript==
 
 var typed = false;
