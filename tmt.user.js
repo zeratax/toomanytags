@@ -5,6 +5,7 @@
 // @author       ZerataX
 // @namespace    mail@zera.tax
 // @license      MIT
+// @updateURL    https://openuserjs.org/meta/ZerataX/tmt.meta.js
 // @include      /^https?://(www\.)?tsumino\.com/*
 // @include      /^https?://(www\.)?pururin\.(us|io)\/contribute\/upload
 // @require      https://raw.githubusercontent.com/dwachss/bililiteRange/master/bililiteRange.js
